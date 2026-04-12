@@ -94,8 +94,14 @@ class BatchRequest(BaseModel):
 
 @app.on_event("startup")
 async def startup():
-    load_artifacts()
-    print("Model and preprocessor loaded successfully!")
+    try:
+        load_artifacts()
+        print("Model and preprocessor loaded successfully!")
+    except Exception as e:
+        import traceback
+        print("STARTUP ERROR:", e)
+        traceback.print_exc()
+        raise
 
 
 @app.get("/health")
