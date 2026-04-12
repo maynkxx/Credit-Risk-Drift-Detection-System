@@ -1,0 +1,141 @@
+{
+  "timestamp": "2026-04-12T17:33:12.243125",
+  "reference_samples": 5000,
+  "current_samples": 3000,
+  "features": {
+    "person_age": {
+      "type": "numerical",
+      "psi": 0.0053,
+      "ks_statistic": 0.0241,
+      "ks_pvalue": 0.221621,
+      "ref_mean": 27.75,
+      "curr_mean": 27.48,
+      "mean_shift": -0.28,
+      "ref_std": 6.12,
+      "curr_std": 5.93,
+      "status": "stable"
+    },
+    "person_income": {
+      "type": "numerical",
+      "psi": 0.0016,
+      "ks_statistic": 0.0151,
+      "ks_pvalue": 0.78291,
+      "ref_mean": 64275.76,
+      "curr_mean": 64027.03,
+      "mean_shift": -248.73,
+      "ref_std": 37155.59,
+      "curr_std": 37772.83,
+      "status": "stable"
+    },
+    "person_emp_length": {
+      "type": "numerical",
+      "psi": 0.0025,
+      "ks_statistic": 0.0113,
+      "ks_pvalue": 0.969995,
+      "ref_mean": 4.85,
+      "curr_mean": 4.89,
+      "mean_shift": 0.04,
+      "ref_std": 4.09,
+      "curr_std": 4.12,
+      "status": "stable"
+    },
+    "loan_amnt": {
+      "type": "numerical",
+      "psi": 0.0024,
+      "ks_statistic": 0.0097,
+      "ks_pvalue": 0.993649,
+      "ref_mean": 9611.74,
+      "curr_mean": 9597.35,
+      "mean_shift": -14.39,
+      "ref_std": 6351.34,
+      "curr_std": 6360.27,
+      "status": "stable"
+    },
+    "loan_int_rate": {
+      "type": "numerical",
+      "psi": 0.0074,
+      "ks_statistic": 0.0211,
+      "ks_pvalue": 0.427775,
+      "ref_mean": 11.0,
+      "curr_mean": 10.97,
+      "mean_shift": -0.03,
+      "ref_std": 3.29,
+      "curr_std": 3.2,
+      "status": "stable"
+    },
+    "loan_percent_income": {
+      "type": "numerical",
+      "psi": 0.0072,
+      "ks_statistic": 0.017,
+      "ks_pvalue": 0.644757,
+      "ref_mean": 0.17,
+      "curr_mean": 0.17,
+      "mean_shift": 0.0,
+      "ref_std": 0.1,
+      "curr_std": 0.11,
+      "status": "stable"
+    },
+    "cb_person_cred_hist_length": {
+      "type": "numerical",
+      "psi": 0.0032,
+      "ks_statistic": 0.0221,
+      "ks_pvalue": 0.316598,
+      "ref_mean": 5.83,
+      "curr_mean": 5.7,
+      "mean_shift": -0.13,
+      "ref_std": 4.08,
+      "curr_std": 4.01,
+      "status": "stable"
+    },
+    "person_home_ownership": {
+      "type": "categorical",
+      "max_category_diff": 0.0017,
+      "new_categories": [],
+      "missing_categories": [],
+      "status": "stable"
+    },
+    "loan_intent": {
+      "type": "categorical",
+      "max_category_diff": 0.0079,
+      "new_categories": [],
+      "missing_categories": [],
+      "status": "stable"
+    },
+    "loan_grade": {
+      "type": "categorical",
+      "max_category_diff": 0.0333,
+      "new_categories": [],
+      "missing_categories": [],
+      "status": "stable"
+    },
+    "cb_person_default_on_file": {
+      "type": "categorical",
+      "max_category_diff": 0.01,
+      "new_categories": [],
+      "missing_categories": [],
+      "status": "stable"
+    }
+  },
+  "overall": {
+    "drifted_features": [],
+    "warning_features": [],
+    "stable_features": [
+      "person_age",
+      "person_income",
+      "person_emp_length",
+      "loan_amnt",
+      "loan_int_rate",
+      "loan_percent_income",
+      "cb_person_cred_hist_length",
+      "person_home_ownership",
+      "loan_intent",
+      "loan_grade",
+      "cb_person_default_on_file"
+    ],
+    "total_features_analyzed": 11,
+    "drift_detected": false,
+    "severity": "none",
+    "drift_percentage": 0.0,
+    "recommendation": "Model is stable - no action needed"
+  }
+}

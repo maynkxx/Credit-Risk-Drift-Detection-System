@@ -1,0 +1,142 @@
+{
+  "timestamp": "2026-04-12T17:33:12.267716",
+  "reference_samples": 5000,
+  "current_samples": 5000,
+  "features": {
+    "person_age": {
+      "type": "numerical",
+      "psi": 0.0,
+      "ks_statistic": 0.0,
+      "ks_pvalue": 1.0,
+      "ref_mean": 27.75,
+      "curr_mean": 27.75,
+      "mean_shift": 0.0,
+      "ref_std": 6.12,
+      "curr_std": 6.12,
+      "status": "stable"
+    },
+    "person_income": {
+      "type": "numerical",
+      "psi": 0.0431,
+      "ks_statistic": 0.0738,
+      "ks_pvalue": 0.0,
+      "ref_mean": 64275.76,
+      "curr_mean": 59454.98,
+      "mean_shift": -4820.78,
+      "ref_std": 37155.59,
+      "curr_std": 34368.94,
+      "status": "stable"
+    },
+    "person_emp_length": {
+      "type": "numerical",
+      "psi": 0.0,
+      "ks_statistic": 0.0,
+      "ks_pvalue": 1.0,
+      "ref_mean": 4.85,
+      "curr_mean": 4.85,
+      "mean_shift": 0.0,
+      "ref_std": 4.09,
+      "curr_std": 4.09,
+      "status": "stable"
+    },
+    "loan_amnt": {
+      "type": "numerical",
+      "psi": 0.0828,
+      "ks_statistic": 0.1014,
+      "ks_pvalue": 0.0,
+      "ref_mean": 9611.74,
+      "curr_mean": 10550.3,
+      "mean_shift": 938.56,
+      "ref_std": 6351.34,
+      "curr_std": 6901.45,
+      "status": "stable"
+    },
+    "loan_int_rate": {
+      "type": "numerical",
+      "psi": 0.257,
+      "ks_statistic": 0.1806,
+      "ks_pvalue": 0.0,
+      "ref_mean": 11.0,
+      "curr_mean": 12.25,
+      "mean_shift": 1.25,
+      "ref_std": 3.29,
+      "curr_std": 3.29,
+      "status": "drift_detected"
+    },
+    "loan_percent_income": {
+      "type": "numerical",
+      "psi": 0.0671,
+      "ks_statistic": 0.107,
+      "ks_pvalue": 0.0,
+      "ref_mean": 0.17,
+      "curr_mean": 0.2,
+      "mean_shift": 0.03,
+      "ref_std": 0.1,
+      "curr_std": 0.12,
+      "status": "stable"
+    },
+    "cb_person_cred_hist_length": {
+      "type": "numerical",
+      "psi": 0.0,
+      "ks_statistic": 0.0,
+      "ks_pvalue": 1.0,
+      "ref_mean": 5.83,
+      "curr_mean": 5.83,
+      "mean_shift": 0.0,
+      "ref_std": 4.08,
+      "curr_std": 4.08,
+      "status": "stable"
+    },
+    "person_home_ownership": {
+      "type": "categorical",
+      "max_category_diff": 0.0236,
+      "new_categories": [],
+      "missing_categories": [],
+      "status": "stable"
+    },
+    "loan_intent": {
+      "type": "categorical",
+      "max_category_diff": 0.0,
+      "new_categories": [],
+      "missing_categories": [],
+      "status": "stable"
+    },
+    "loan_grade": {
+      "type": "categorical",
+      "max_category_diff": 0.0338,
+      "new_categories": [],
+      "missing_categories": [],
+      "status": "stable"
+    },
+    "cb_person_default_on_file": {
+      "type": "categorical",
+      "max_category_diff": 0.0668,
+      "new_categories": [],
+      "missing_categories": [],
+      "status": "stable"
+    }
+  },
+  "overall": {
+    "drifted_features": [
+      "loan_int_rate"
+    ],
+    "warning_features": [],
+    "stable_features": [
+      "person_age",
+      "person_income",
+      "person_emp_length",
+      "loan_amnt",
+      "loan_percent_income",
+      "cb_person_cred_hist_length",
+      "person_home_ownership",
+      "loan_intent",
+      "loan_grade",
+      "cb_person_default_on_file"
+    ],
+    "total_features_analyzed": 11,
+    "drift_detected": true,
+    "severity": "warning",
+    "drift_percentage": 9.1,
+    "recommendation": "INVESTIGATE - some features showing drift, monitor closely"
+  }
+}
