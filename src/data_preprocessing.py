@@ -126,8 +126,7 @@ class CreditRiskPreprocessor:
         return X
 
     def save(self, path):
-        """Save fitted preprocessor with correct module name."""
-        self.__class__.__module__ = 'data_preprocessing'
+        """Save fitted preprocessor."""
         joblib.dump(self, path)
         print(f"Preprocessor saved: {path}")
 

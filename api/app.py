@@ -50,8 +50,11 @@ class CustomUnpickler(pickle.Unpickler):
 def load_artifacts():
     global model, preprocessor, metadata
     model = joblib.load(MODEL_PATH)
-    with open(PREPROCESSOR_PATH, 'rb') as f:
-        preprocessor = CustomUnpickler(f).load()
+    try:
+        preprocessor = joblib.load(PREPROCESSOR_PATH)
+    except Exception:
+        with open(PREPROCESSOR_PATH, 'rb') as f:
+            preprocessor = CustomUnpickler(f).load()
     with open(METADATA_PATH, 'r') as f:
         metadata = json.load(f)
 
