@@ -183,8 +183,10 @@ class CreditRiskPreprocessor:
 
     def save(self, path):
         """Save fitted preprocessor."""
-        joblib.dump(self, path)
-        print(f"Preprocessor saved: {path}")
+    import __main__
+    __main__.CreditRiskPreprocessor = CreditRiskPreprocessor
+    joblib.dump(self, path)
+    print(f"Preprocessor saved: {path}")
 
     @staticmethod
     def load(path):
