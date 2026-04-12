@@ -11,15 +11,14 @@ Endpoints:
 import os
 import sys
 import json
+import pickle
 import joblib
 import pandas as pd
 import numpy as np
 from datetime import datetime
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
-from data_preprocessing import CreditRiskPreprocessor  # noqa
 
-from data_preprocessing import CreditRiskPreprocessor  # noqa
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from typing import Optional, List
@@ -40,10 +39,19 @@ preprocessor = None
 metadata = None
 
 
+class CustomUnpickler(pickle.Unpickler):
+    def find_class(self, module, name):
+        if name == 'CreditRiskPreprocessor':
+            from data_preprocessing import CreditRiskPreprocessor
+            return CreditRiskPreprocessor
+        return super().find_class(module, name)
+
+
 def load_artifacts():
     global model, preprocessor, metadata
     model = joblib.load(MODEL_PATH)
-    preprocessor = joblib.load(PREPROCESSOR_PATH)
+    with open(PREPROCESSOR_PATH, 'rb') as f:
+        preprocessor = CustomUnpickler(f).load()
     with open(METADATA_PATH, 'r') as f:
         metadata = json.load(f)
 
