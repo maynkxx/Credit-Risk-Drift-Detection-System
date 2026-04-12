@@ -183,9 +183,12 @@ class CreditRiskPreprocessor:
 
     def save(self, path):
         """Save fitted preprocessor."""
-    import __main__
-    __main__.CreditRiskPreprocessor = CreditRiskPreprocessor
+    import pickle
+    # Force save with correct module reference
+    original_module = self.__class__.__module__
+    self.__class__.__module__ = 'data_preprocessing'
     joblib.dump(self, path)
+    self.__class__.__module__ = original_module
     print(f"Preprocessor saved: {path}")
 
     @staticmethod
