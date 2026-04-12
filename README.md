@@ -12,7 +12,6 @@ A production-grade ML pipeline that predicts loan defaults using real credit ris
 ## 🚀 Live Demo
 **API Docs**: https://credit-risk-api-scq0.onrender.com/docs
 
-> Note: Free tier — may take ~50 seconds to wake up if inactive.
 
 ## Why This Matters
 
