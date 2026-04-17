@@ -7,50 +7,77 @@ BASE_URL = "https://credit-risk-api-scq0.onrender.com"
 def predict_single(payload):
     url = f"{BASE_URL}/predict"
 
-    for attempt in range(3):  # retry up to 3 times
+    for attempt in range(3):
         try:
             response = requests.post(url, json=payload, timeout=60)
 
-            # If server gives a bad response
             if response.status_code != 200:
                 return {
-                    "error": True,
+                    "status": "error",
                     "message": f"Server error: {response.status_code}"
                 }
 
             return response.json()
 
         except requests.exceptions.ReadTimeout:
-            # Backend is waking up (very common on Render free tier)
             if attempt < 2:
                 time.sleep(5)
             else:
                 return {
-                    "error": True,
-                    "message": "Server is waking up... please try again in a few seconds."
+                    "status": "error",
+                    "message": "Server is waking up... try again in a few seconds."
                 }
 
         except requests.exceptions.ConnectionError:
             return {
-                "error": True,
-                "message": "Cannot connect to backend. It might be restarting."
+                "status": "error",
+                "message": "Cannot connect to backend."
             }
 
         except Exception as e:
             return {
-                "error": True,
-                "message": f"Unexpected error: {str(e)}"
+                "status": "error",
+                "message": str(e)
             }
 
     return {
-        "error": True,
-        "message": "Request failed after multiple attempts."
+        "status": "error",
+        "message": "Request failed after retries"
     }
 
 
-def health_check():
+# ✅ FIXED NAME (matches frontend import)
+def get_health():
     try:
         response = requests.get(f"{BASE_URL}/health", timeout=30)
         return response.json()
-    except:
-        return {"status": "unreachable"}
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+
+
+# ✅ NEW FUNCTION (required by model_info.py)
+def get_model_info():
+    try:
+        response = requests.get(f"{BASE_URL}/model-info", timeout=30)
+        return response.json()
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+
+
+# ✅ NEW FUNCTION (required by batch.py)
+def predict_batch(data):
+    try:
+        response = requests.post(f"{BASE_URL}/predict_batch", json=data, timeout=60)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
