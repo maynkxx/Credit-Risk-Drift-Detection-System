@@ -1,0 +1,10 @@
+import streamlit as st
+st.set_page_config(page_title='Credit Risk System', layout='wide', initial_sidebar_state='expanded')
+st.markdown('\n    <style>\n    .block-container {\n        padding-top: 2rem;\n        padding-bottom: 2rem;\n    }\n    .metric-card {\n        background-color: #f8f9fa;\n        border: 1px solid #e9ecef;\n        padding: 1.5rem;\n        border-radius: 0.5rem;\n        text-align: center;\n    }\n    .status-up { color: #28a745; font-weight: bold; }\n    .status-down { color: #dc3545; font-weight: bold; }\n    </style>\n', unsafe_allow_html=True)
+dashboard_page = st.Page('pages/dashboard.py', title='Dashboard', default=True)
+predict_page = st.Page('pages/predict.py', title='Predict Risk')
+batch_page = st.Page('pages/batch.py', title='Batch Prediction')
+drift_page = st.Page('pages/drift.py', title='Drift Monitoring')
+model_page = st.Page('pages/model_info.py', title='Model Info')
+pg = st.navigation({'System': [dashboard_page, model_page], 'Operations': [predict_page, batch_page], 'Monitoring': [drift_page]})
+pg.run()

@@ -9,7 +9,7 @@ cat > README.md << 'EOF'
 
 A production-grade ML pipeline that predicts loan defaults using real credit risk data and **automatically detects when the model becomes unreliable** due to data drift — ensuring predictions stay trustworthy over time.
 
-## 🚀 Live Demo
+## Live Demo
 **API Docs**: https://credit-risk-api-scq0.onrender.com/docs
 
 
