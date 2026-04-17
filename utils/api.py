@@ -1,43 +1,56 @@
-import os
 import requests
-import streamlit as st
 import time
-API_BASE_URL = os.getenv('API_BASE_URL', 'https://credit-risk-api-scq0.onrender.com')
 
-def get_health():
-    start_time = time.time()
-    try:
-        response = requests.get(f'{API_BASE_URL}/health', timeout=20)
-        delay = time.time() - start_time
-        response.raise_for_status()
-        data = response.json()
-        data['delay_seconds'] = delay
-        return data
-    except requests.exceptions.RequestException as e:
-        delay = time.time() - start_time
-        return {'status': 'error', 'message': str(e), 'delay_seconds': delay}
+BASE_URL = "https://credit-risk-api-scq0.onrender.com"
 
-def get_model_info():
+
+def predict_single(payload):
+    url = f"{BASE_URL}/predict"
+
+    for attempt in range(3):  # retry up to 3 times
+        try:
+            response = requests.post(url, json=payload, timeout=60)
+
+            # If server gives a bad response
+            if response.status_code != 200:
+                return {
+                    "error": True,
+                    "message": f"Server error: {response.status_code}"
+                }
+
+            return response.json()
+
+        except requests.exceptions.ReadTimeout:
+            # Backend is waking up (very common on Render free tier)
+            if attempt < 2:
+                time.sleep(5)
+            else:
+                return {
+                    "error": True,
+                    "message": "Server is waking up... please try again in a few seconds."
+                }
+
+        except requests.exceptions.ConnectionError:
+            return {
+                "error": True,
+                "message": "Cannot connect to backend. It might be restarting."
+            }
+
+        except Exception as e:
+            return {
+                "error": True,
+                "message": f"Unexpected error: {str(e)}"
+            }
+
+    return {
+        "error": True,
+        "message": "Request failed after multiple attempts."
+    }
+
+
+def health_check():
     try:
-        response = requests.get(f'{API_BASE_URL}/model/info', timeout=20)
-        response.raise_for_status()
+        response = requests.get(f"{BASE_URL}/health", timeout=30)
         return response.json()
-    except requests.exceptions.RequestException as e:
-        return {'status': 'error', 'message': str(e)}
-
-def predict_single(data: dict):
-    try:
-        response = requests.post(f'{API_BASE_URL}/predict', json=data, timeout=20)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        return {'status': 'error', 'message': str(e)}
-
-def predict_batch(file):
-    try:
-        files = {'file': (file.name, file, 'text/csv')}
-        response = requests.post(f'{API_BASE_URL}/predict/batch', files=files, timeout=20)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        return {'status': 'error', 'message': str(e)}
+    except:
+        return {"status": "unreachable"}

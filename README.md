@@ -1,4 +1,3 @@
-cat > README.md << 'EOF'
 # Credit Risk Prediction with Automated Drift Detection
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
@@ -7,200 +6,210 @@ cat > README.md << 'EOF'
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 ![Status](https://img.shields.io/badge/Status-Live-brightgreen)
 
-A production-grade ML pipeline that predicts loan defaults using real credit risk data and **automatically detects when the model becomes unreliable** due to data drift — ensuring predictions stay trustworthy over time.
+A production-grade machine learning system that predicts loan default risk and monitors data drift to ensure model reliability over time. The system includes a FastAPI backend for inference and a Streamlit frontend for interaction and visualization.
+
+---
 
 ## Live Demo
-**API Docs**: https://credit-risk-api-scq0.onrender.com/docs
 
+Frontend (UI): https://credit-risk-ui.onrender.com
+API Docs: https://credit-risk-api-scq0.onrender.com/docs
 
-## Why This Matters
+---
 
-ML models degrade silently. A loan default model trained on pre-recession data will give dangerously wrong predictions during an economic downturn — approving risky borrowers and rejecting safe ones. This project solves that by monitoring incoming data distributions and raising alerts when they deviate from training data.
+## Problem Statement
 
-## Architecture
+Machine learning models degrade silently when real-world data changes. A model trained on past economic conditions may produce unreliable predictions under new conditions. This project addresses that by combining prediction with automated drift detection.
 
-\`\`\`
-┌──────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│  Credit Risk     │────▶│  Preprocessing   │────▶│  Model Training │
-│  Dataset (32K)   │     │  + Feature Eng   │     │  (4 models)     │
-└──────────────────┘     └──────────────────┘     └────────┬────────┘
-                                                           │
-                                                           ▼
-┌──────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│  Drift           │◀────│  New Production  │────▶│  FastAPI        │
-│  Detector (PSI)  │     │  Data            │     │  Prediction API │
-└──────┬───────────┘     └──────────────────┘     └─────────────────┘
-       │
-       ▼
-┌─────────────────────────────────────────────┐
-│  STABLE / WARNING / CRITICAL - RETRAIN NOW  │
-└─────────────────────────────────────────────┘
-\`\`\`
+---
+
+## System Architecture
+
+```
+User (Streamlit UI)
+        ↓
+FastAPI Backend (Render)
+        ↓
+Preprocessing + ML Model
+        ↓
+Prediction + Risk Classification
+        ↓
+Drift Detection Monitoring
+```
+
+---
+
+## Features
+
+### Risk Prediction
+
+* Predicts loan default probability
+* Classifies risk into:
+
+  * Low
+  * Medium
+  * High
+  * Very High
+
+### Interactive UI
+
+* Built using Streamlit
+* Multi-page interface (Dashboard, Prediction, Batch, Drift Monitoring)
+* Real-time feedback and metrics
+
+### Batch Prediction
+
+* Supports multiple input records
+* Scalable prediction pipeline
+
+### Drift Detection
+
+* Uses Population Stability Index (PSI)
+* Detects distribution shifts in incoming data
+* Provides actionable alerts (Stable, Warning, Critical)
+
+---
 
 ## Dataset
 
-**Credit Risk Dataset** from Kaggle (32,581 real loan records, 12 features)
+Credit Risk Dataset (32,581 records, 12 features)
 Source: https://www.kaggle.com/datasets/laotse/credit-risk-dataset
 
-Real-world data issues handled:
-- **Outliers**: Ages up to 144, employment length up to 123 years
-- **Missing values**: 895 in employment length, 3,116 in interest rate
-- **Class imbalance**: 78% paid vs 22% default
+Handled real-world issues:
 
-## Results
+* Outliers (extreme ages and employment values)
+* Missing values in key fields
+* Class imbalance (78% non-default, 22% default)
 
-### Model Performance (on real test data)
+---
 
-| Model | Accuracy | Precision | Recall | F1 Score | ROC AUC |
-|-------|----------|-----------|--------|----------|---------|
-| Logistic Regression | 78.8% | 51.1% | 77.6% | 61.6% | 85.4% |
-| Random Forest | 91.8% | 86.9% | 73.6% | 79.7% | 92.8% |
-| **Gradient Boosting** | **94.2%** | **97.1%** | **75.6%** | **85.0%** | **95.5%** |
-| XGBoost | 92.9% | 86.2% | 80.6% | 83.3% | 95.3% |
+## Model Performance
 
-**Best model**: Gradient Boosting with 94.2% accuracy and 95.5% ROC AUC
+| Model               | Accuracy | Precision | Recall | F1 Score | ROC AUC |
+| ------------------- | -------- | --------- | ------ | -------- | ------- |
+| Logistic Regression | 78.8%    | 51.1%     | 77.6%  | 61.6%    | 85.4%   |
+| Random Forest       | 91.8%    | 86.9%     | 73.6%  | 79.7%    | 92.8%   |
+| Gradient Boosting   | 94.2%    | 97.1%     | 75.6%  | 85.0%    | 95.5%   |
+| XGBoost             | 92.9%    | 86.2%     | 80.6%  | 83.3%    | 95.3%   |
 
-### Drift Detection Results
+Best model: Gradient Boosting
 
-| Scenario | Drifted Features | Severity | Action |
-|----------|-----------------|----------|--------|
-| Control (same data) | 0/11 (0%) | STABLE | None needed |
-| Mild downturn | 1/11 (9%) | WARNING | Investigate |
-| Severe downturn | 4/11 (36%) | CRITICAL | Retrain immediately |
-
-### Top Risk Factors (Feature Importance)
-
-1. **Income-to-Loan Ratio** (27.0%) — Most predictive feature
-2. **Loan Grade** (20.4%) — Assigned risk grade matters
-3. **Home Ownership** (16.7%) — Stability indicator
-4. **Person Income** (14.2%) — Ability to repay
-5. **Loan Intent** (8.5%) — Purpose affects risk
+---
 
 ## Tech Stack
 
-| Component | Technology |
-|-----------|-----------|
-| Language | Python 3.11 |
-| ML Models | Scikit-learn, XGBoost |
-| Drift Detection | Custom PSI + KS tests (SciPy) |
-| API | FastAPI + Uvicorn |
-| Data Processing | Pandas, NumPy |
-| Deployment | Render |
+* Python 3.11
+* Scikit-learn, XGBoost, LightGBM
+* FastAPI (Backend API)
+* Streamlit (Frontend UI)
+* Pandas, NumPy
+* Render (Deployment)
+
+---
 
 ## Project Structure
 
-\`\`\`
+```
 credit-risk-drift-detection/
-├── data/
-│   ├── raw/credit_risk_dataset.csv    # Real Kaggle dataset
-│   └── processed/                     # Train/test splits + reference data
-├── src/
-│   ├── data_preprocessing.py          # Outlier removal, feature engineering, encoding
-│   ├── train.py                       # Multi-model training & comparison
-│   └── drift_detector.py              # PSI & KS drift monitoring
-├── api/
-│   └── app.py                         # FastAPI prediction service
-├── models/                            # Saved model + preprocessor + metadata
-├── reports/                           # Drift detection JSON reports
-├── requirements.txt
+├── app.py                     # Streamlit entry point
+├── pages/                    # UI pages
+├── api/                      # FastAPI backend
+├── models/                   # Trained model + preprocessor
+├── src/                      # Training + preprocessing
+├── utils/                    # API helper functions
+├── requirements.txt          # UI dependencies
+├── requirements-backend.txt  # Backend dependencies
 └── README.md
-\`\`\`
+```
 
-## Quick Start
+---
 
-> **Prerequisites**: Python 3.11, create a virtual environment first:
-> \`python3.11 -m venv venv311 && source venv311/bin/activate\`
+## Running Locally
 
-### 1. Install Dependencies
-\`\`\`bash
-pip install -r requirements.txt && pip install lightgbm==4.6.0
-\`\`\`
+### Backend
 
-### 2. Run Preprocessing
-\`\`\`bash
-python3 -c "import sys; sys.path.insert(0, 'src'); from data_preprocessing import run_preprocessing; run_preprocessing()"
-\`\`\`
+```
+pip install -r requirements-backend.txt
+uvicorn api.app:app --reload
+```
 
-### 3. Train Models
-\`\`\`bash
-python src/train.py
-\`\`\`
+### Frontend
 
-### 4. Run Drift Detection
-\`\`\`bash
-python src/drift_detector.py
-\`\`\`
+```
+pip install -r requirements.txt
+streamlit run app.py
+```
 
-### 5. Start Prediction API
-\`\`\`bash
-PYTHONPATH=. uvicorn api.app:app --reload
-\`\`\`
-Visit \`http://localhost:8000/docs\` for interactive Swagger UI.
+---
 
-## API Usage
+## API Example
 
-\`\`\`bash
-curl -X POST https://credit-risk-api-scq0.onrender.com/predict \
-  -H "Content-Type: application/json" \
-  -d '{
-    "person_age": 30,
-    "person_income": 60000,
-    "person_home_ownership": "MORTGAGE",
-    "person_emp_length": 5.0,
-    "loan_intent": "PERSONAL",
-    "loan_grade": "B",
-    "loan_amnt": 10000,
-    "loan_int_rate": 11.5,
-    "loan_percent_income": 0.17,
-    "cb_person_default_on_file": "N",
-    "cb_person_cred_hist_length": 8
-  }'
-\`\`\`
+```
+POST /predict
+```
+
+Request:
+
+```
+{
+  "person_age": 30,
+  "person_income": 60000,
+  "person_home_ownership": "MORTGAGE",
+  "person_emp_length": 5.0,
+  "loan_intent": "PERSONAL",
+  "loan_grade": "B",
+  "loan_amnt": 10000,
+  "loan_int_rate": 11.5,
+  "loan_percent_income": 0.17,
+  "cb_person_default_on_file": "N",
+  "cb_person_cred_hist_length": 8
+}
+```
 
 Response:
-\`\`\`json
+
+```
 {
   "prediction": "FULLY_PAID",
   "default_probability": 0.0312,
   "risk_level": "LOW",
   "confidence": 0.9688
 }
-\`\`\`
+```
 
-## How Drift Detection Works
+---
 
-**Population Stability Index (PSI)** measures how much a feature's distribution has shifted:
+## Drift Detection
 
-\`\`\`
+Population Stability Index (PSI):
+
+```
 PSI = Σ (current% - reference%) × ln(current% / reference%)
-\`\`\`
+```
 
-| PSI Value | Interpretation | Action |
-|-----------|---------------|--------|
-| < 0.1 | No significant change | Model is fine |
-| 0.1 - 0.2 | Moderate shift | Investigate the cause |
-| > 0.2 | Significant drift | Retrain the model |
+| PSI Value | Interpretation    | Action           |
+| --------- | ----------------- | ---------------- |
+| < 0.1     | Stable            | No action needed |
+| 0.1–0.2   | Moderate drift    | Investigate      |
+| > 0.2     | Significant drift | Retrain model    |
 
-## Key Design Decisions
+---
 
-1. **F1 over Accuracy**: With 22% default rate, a naive model predicting "no default" always gets 78% accuracy. F1 balances precision and recall.
+## Notes
 
-2. **Feature Engineering**: Created \`income_to_loan\` ratio which became the #1 most important feature.
+* Backend may take 20–30 seconds to respond on first request (Render free tier)
+* Retry logic is implemented in the frontend to handle this
 
-3. **Outlier Removal**: Ages of 144 and employment lengths of 123 years are data errors. Removing them improved model reliability.
-
-4. **Module-based Preprocessing**: Preprocessor is saved with correct module reference to ensure deployment compatibility.
+---
 
 ## Future Improvements
 
-- [ ] Streamlit dashboard for real-time drift visualization
-- [ ] Automated retraining pipeline triggered on drift detection
-- [ ] MLflow experiment tracking integration
-- [ ] Docker containerization for deployment
-- [ ] SHAP explainability for individual predictions
-- [ ] Unit tests with pytest
+* SHAP-based explainability
+* Automated retraining pipeline
+* Real-time monitoring dashboard
+* Authentication and user roles
+* Model versioning and tracking
 
-## License
+---
 
-MIT
-EOF
+
