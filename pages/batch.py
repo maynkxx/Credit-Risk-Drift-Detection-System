@@ -17,7 +17,8 @@ uploaded_file = st.file_uploader('Upload CSV', type=['csv'])
 
 if uploaded_file is not None:
     try:
-        # ✅ Read CSV properly
+        # ✅ ALWAYS reset pointer before reading
+        uploaded_file.seek(0)
         df = pd.read_csv(uploaded_file)
 
         st.subheader('Data Preview')
@@ -26,20 +27,22 @@ if uploaded_file is not None:
         if st.button('Run Batch Prediction', type='primary'):
             with st.spinner('Processing batch... this may take a few seconds'):
 
-                # ✅ FIX: Convert dataframe → JSON format
+                # ✅ Convert dataframe → JSON
                 payload = {
                     "applications": df.to_dict(orient="records")
                 }
 
+                # 🔍 DEBUG (optional, remove later)
+                # st.write(payload)
+
                 result = predict_batch(payload)
 
-            # ✅ Error handling
+            # ✅ Proper error handling
             if result is None or result.get("status") == "error":
                 st.error(f"Batch prediction failed: {result.get('message', 'Unknown error')}")
             else:
                 st.success('Batch processing complete!')
 
-                # ✅ Handle response safely
                 predictions = result.get('predictions', [])
 
                 preds_df = pd.DataFrame(predictions)
@@ -47,7 +50,7 @@ if uploaded_file is not None:
                 st.subheader('Prediction Results')
                 st.dataframe(preds_df, use_container_width=True)
 
-                # ✅ Download button
+                # ✅ Download results
                 csv = preds_df.to_csv(index=False).encode('utf-8')
 
                 st.download_button(
