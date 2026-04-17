@@ -4,6 +4,9 @@ import time
 BASE_URL = "https://credit-risk-api-scq0.onrender.com"
 
 
+# -------------------------------
+# 🔮 SINGLE PREDICTION
+# -------------------------------
 def predict_single(payload):
     url = f"{BASE_URL}/predict"
 
@@ -14,10 +17,16 @@ def predict_single(payload):
             if response.status_code != 200:
                 return {
                     "status": "error",
-                    "message": f"Server error: {response.status_code}"
+                    "message": f"Server error {response.status_code}: {response.text}"
                 }
 
-            return response.json()
+            try:
+                return response.json()
+            except:
+                return {
+                    "status": "error",
+                    "message": f"Invalid JSON response: {response.text}"
+                }
 
         except requests.exceptions.ReadTimeout:
             if attempt < 2:
@@ -46,11 +55,21 @@ def predict_single(payload):
     }
 
 
-# ✅ FIXED NAME (matches frontend import)
+# -------------------------------
+# ❤️ HEALTH CHECK
+# -------------------------------
 def get_health():
     try:
         response = requests.get(f"{BASE_URL}/health", timeout=30)
+
+        if response.status_code != 200:
+            return {
+                "status": "error",
+                "message": f"Health check failed: {response.status_code}"
+            }
+
         return response.json()
+
     except Exception as e:
         return {
             "status": "error",
@@ -58,11 +77,27 @@ def get_health():
         }
 
 
-# ✅ NEW FUNCTION (required by model_info.py)
+# -------------------------------
+# 📊 MODEL INFO  (FIXED ENDPOINT)
+# -------------------------------
 def get_model_info():
     try:
-        response = requests.get(f"{BASE_URL}/model-info", timeout=30)
-        return response.json()
+        response = requests.get(f"{BASE_URL}/model/info", timeout=30)
+
+        if response.status_code != 200:
+            return {
+                "status": "error",
+                "message": f"Failed to fetch model info: {response.status_code} - {response.text}"
+            }
+
+        try:
+            return response.json()
+        except:
+            return {
+                "status": "error",
+                "message": f"Invalid JSON response: {response.text}"
+            }
+
     except Exception as e:
         return {
             "status": "error",
@@ -70,12 +105,27 @@ def get_model_info():
         }
 
 
-# ✅ NEW FUNCTION (required by batch.py)
+# -------------------------------
+# 📦 BATCH PREDICTION (FIXED ENDPOINT)
+# -------------------------------
 def predict_batch(data):
     try:
-        response = requests.post(f"{BASE_URL}/predict_batch", json=data, timeout=60)
-        response.raise_for_status()
-        return response.json()
+        response = requests.post(f"{BASE_URL}/predict/batch", json=data, timeout=60)
+
+        if response.status_code != 200:
+            return {
+                "status": "error",
+                "message": f"Batch prediction failed: {response.status_code} - {response.text}"
+            }
+
+        try:
+            return response.json()
+        except:
+            return {
+                "status": "error",
+                "message": f"Invalid JSON response: {response.text}"
+            }
+
     except Exception as e:
         return {
             "status": "error",
