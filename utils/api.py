@@ -82,7 +82,7 @@ def get_health():
 # -------------------------------
 def get_model_info():
     try:
-        response = requests.get(f"{BASE_URL}/model/info", timeout=30)
+        response = requests.get(f"{BASE_URL}/model-info", timeout=30)
 
         if response.status_code != 200:
             return {
