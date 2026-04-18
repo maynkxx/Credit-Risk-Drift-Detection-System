@@ -7,7 +7,7 @@
     "f1_score": 0.8451,
     "roc_auc": 0.9545
   },
-  "feature_names": [
+  "features": [
     "person_age",
     "person_income",
     "person_home_ownership",

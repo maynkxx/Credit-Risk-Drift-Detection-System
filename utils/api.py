@@ -110,7 +110,7 @@ def get_model_info():
 # -------------------------------
 def predict_batch(data):
     try:
-        response = requests.post(f"{BASE_URL}/predict/batch", json=data, timeout=60)
+        response = requests.post(f"{BASE_URL}/predict_batch", json=data, timeout=60)
 
         if response.status_code != 200:
             return {

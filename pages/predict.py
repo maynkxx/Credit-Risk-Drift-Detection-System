@@ -47,7 +47,7 @@ if submitted:
         result = predict_single(payload)
 
     # 🚨 Fixed error handling
-    if result is None or result.get("error") or "prediction" not in result:
+    if result is None or result.get("status") == "error" or "prediction" not in result:
         st.error(result.get("message", "Backend is slow or restarting. Please try again."))
     else:
         st.markdown('---')
